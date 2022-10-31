@@ -1,5 +1,9 @@
+import { useState } from "react";
 import styled from "@emotion/styled";
+import Avatar from "@mui/material/Avatar";
+import { useStoreState } from "../store/hooks";
 
+import Popup from "../components/popovers/Popup";
 import Profile from "../components/popovers/Profile";
 
 import logo from "../assets/logo.png";
@@ -10,13 +14,18 @@ import solana from "../assets/solana.svg";
 import wallet from "../assets/wallet.svg";
 
 import Button from "./Button";
+import Connect from "./Connect";
 import { NavLink as Link } from "react-router-dom";
 
 interface Props {
   setDeposit: React.Dispatch<React.SetStateAction<boolean>>;
+  setWallet: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header = ({ setDeposit }: Props) => {
+const Header = ({ setDeposit, setWallet }: Props) => {
+  const [coin, setCoin] = useState(0);
+  const { user, isAuthenticated } = useStoreState((store) => store.userModel);
+
   return (
     <Root>
       <img className="logo" src={logo} alt="logo" />
@@ -41,22 +50,80 @@ const Header = ({ setDeposit }: Props) => {
       </Link>
 
       <div className="account">
-        <div className="balance">
-          <img src={solana} alt="solana" />
-          <p>1.63</p>
+        <div className="balance" onClick={() => setWallet(true)}>
+          <Popup
+            placement="bottom-start"
+            button={
+              <div style={{ paddingTop: 5 }}>
+                <img src={solana} alt="solana" />
+              </div>
+            }
+          >
+            <Coins>
+              <div onClick={() => setCoin(0)}>SOL</div>
+              <div onClick={() => setCoin(1)}>USDC</div>
+              <div onClick={() => setCoin(2)}>ETH</div>
+              <div onClick={() => setCoin(3)}>BTC</div>
+            </Coins>
+          </Popup>
+          <p>{user.cccBalance?.toFixed(2) ?? "0.00"}</p>
           <img src={wallet} alt="wallet" />
         </div>
 
         <Button label="Deposit" onClick={() => setDeposit(true)} />
-        <Profile />
+        {!isAuthenticated ? (
+          <Connect />
+        ) : (
+          <Popup
+            placement="bottom-end"
+            button={
+              <>
+                <Avatar
+                  src={user.avatar}
+                  className="avatar"
+                  sx={{
+                    border: "2px solid #111121",
+                    boxShadow: "0 0 0 2px #AA8F8F",
+                  }}
+                />
+                <p className="level">{user.level}</p>
+              </>
+            }
+          >
+            <Profile />
+          </Popup>
+        )}
       </div>
     </Root>
   );
 };
 
+const Coins = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 114.2px;
+  background: white;
+  margin-left: -17px;
+  background: transparent;
+  border-radius: 8px;
+  & > div {
+    background: rgb(22 22 40);
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 700;
+  }
+`;
+
 const Root = styled("div")`
   display: flex;
   width: 100%;
+  @media screen and (max-width: 1550px) {
+    padding: 0 50px;
+  }
   & > .nav-link {
     text-decoration: none;
     & > img {
@@ -83,12 +150,15 @@ const Root = styled("div")`
     & > .balance {
       display: flex;
       align-items: center;
+      justify-content: center;
       background: #111121;
       border: none;
       border-radius: 8px;
       padding: 2px 17px 4px;
       height: 100%;
       max-height: 38px;
+      cursor: pointer;
+      margin-right: 5px;
       & > p {
         color: #c1c1e3;
         font-size: 14px;

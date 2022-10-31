@@ -1,16 +1,8 @@
-import { useState } from "react";
-
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import styled from "@emotion/styled";
 
 import { MdClose } from "react-icons/md";
-import { useWallet } from "@solana/wallet-adapter-react";
-import toast from "react-hot-toast";
-import useClient from "../../hooks/useClient";
-
-import { auth, depositTransaction, getNonce } from "../../utils/lib/mutations";
-import { Buffer } from "buffer";
 
 interface Props {
   open: boolean;
@@ -18,43 +10,6 @@ interface Props {
 }
 
 const Deposit = ({ open, onClose }: Props) => {
-  const [value, setValue] = useState<any>();
-  const client = useClient();
-  const { publicKey, signMessage } = useWallet();
-
-  const depositUsdc = async () => {
-    const signature = await client?.depositUsdc(value);
-
-    if (signature) {
-      const result = await depositTransaction({
-        coinType: 2,
-        amount: 1,
-        signature: signature,
-      });
-      console.log(result);
-
-      if (result.status === "success") {
-        toast.success("Successfully deposited!");
-      }
-      if (result.status === "error") {
-        toast.error(result.message[0]);
-      }
-    }
-  };
-
-  const depositSol = async () => {
-    console.log(value);
-    const signature = await client?.depositSol(value);
-    if (signature) {
-      const result = await depositTransaction({
-        coinType: 1,
-        amount: 1,
-        signature: signature,
-      });
-      console.log(result);
-    }
-  };
-
   return (
     <Transition appear show={open} as={Fragment}>
       <Dialog as={Root} onClose={onClose}>
@@ -83,19 +38,12 @@ const Deposit = ({ open, onClose }: Props) => {
             >
               <Dialog.Panel className="modal-panel">
                 <MdClose onClick={onClose} className="close" />
-                <Dialog.Title as="h3">Deposit USDC</Dialog.Title>
+                <Dialog.Title as="h3">Redeem Code</Dialog.Title>
                 <div className="input">
-                  <input
-                    type="text"
-                    placeholder="0.00"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                  ></input>
+                  <input type="text" placeholder="****"></input>
                 </div>
 
-                <button type="button" onClick={depositUsdc}>
-                  Deposit now
-                </button>
+                <button type="button">Redeem now</button>
               </Dialog.Panel>
             </Transition.Child>
           </div>

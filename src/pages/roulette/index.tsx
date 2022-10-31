@@ -2,10 +2,15 @@ import styled from "@emotion/styled";
 
 import Avatar from "@mui/material/Avatar";
 import Countdown from "react-countdown";
+import { io } from "socket.io-client";
 
 import silverCoin from "../../assets/silver-coin.png";
 import goldCoin from "../../assets/gold-coin.png";
 import rareCoin from "../../assets/rare-coin.png";
+
+import solana from "../../assets/solana.svg";
+
+const socket = io("https://cats-dev-api.up.railway.app/roulette");
 
 const Roulette = () => {
   const coins = [silverCoin, goldCoin];
@@ -73,6 +78,28 @@ const Roulette = () => {
           renderer={renderer}
         />
       </h5>
+
+      <div className="value-input">
+        <div className="input-container">
+          <div className="input">
+            <img src={solana} alt="solana" />
+            <input placeholder="0.00" type="text" />
+          </div>
+
+          <div className="actions">
+            <div>+0.1</div>
+            <div>+0.5</div>
+            <div>+1.0</div>
+            <div>+2.0</div>
+            <div>Max</div>
+          </div>
+        </div>
+
+        <p className="provably">
+          Round 1232, Hash:
+          69477ce06ae6c0f34c4811b75d7f377c92e3fbda91599ec7dacf476f96081e4a
+        </p>
+      </div>
 
       <div className="bet-actions">
         <div className="column">
@@ -258,6 +285,65 @@ const renderer = ({ seconds, milliseconds, completed }: Clock) => {
 
 const Root = styled("div")`
   padding-bottom: 100px;
+  & > .value-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    & > .provably {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 10px;
+      line-height: 120%;
+      color: #8f8faa;
+      opacity: 0.3;
+    }
+    & > .input-container {
+      margin-bottom: 12px;
+      & > .actions {
+        display: flex;
+        gap: 5px;
+        margin-top: 8px;
+        & > div {
+          background: #0d0d19;
+          color: #414163;
+          padding: 4px 8px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 14px;
+        }
+      }
+      & > .input {
+        position: relative;
+        & > img {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 12px;
+          margin: auto 0;
+        }
+        & > input {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          padding: 6px 12px 5px 38px;
+          gap: 81px;
+          width: 276px;
+          height: 38px;
+          background: #0d0d19;
+          border: 1px solid #111121;
+          border-radius: 8px;
+          &::placeholder {
+            color: #c1c1e3;
+            opacity: 0.2;
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
   & > h5 {
     color: #8f8faa;
     font-size: 16px;

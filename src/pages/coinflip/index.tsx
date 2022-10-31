@@ -41,14 +41,23 @@ const Coinflip = () => {
         </div>
 
         <div className="actions">
-          <div>+0.01</div>
-          <div>+0.01</div>
-          <div>+0.01</div>
-          <div>+0.01</div>
+          <div>+0.1</div>
+          <div>+0.5</div>
+          <div>+1.0</div>
+          <div>+2.0</div>
+          <div>Max</div>
         </div>
       </div>
 
-      <h4>Your games</h4>
+      <div className="title">
+        <h4>
+          Your games <span>Dismiss</span>
+        </h4>
+        <div className="total">
+          <img src={solana} alt="solana" />
+          <p>21.25</p>
+        </div>
+      </div>
       <div className="grid">
         {Array(4)
           .fill("t")
@@ -57,7 +66,13 @@ const Coinflip = () => {
           ))}
       </div>
 
-      <h4>10 Active games</h4>
+      <div className="title">
+        <h4>10 Active games</h4>
+        <div className="total">
+          <img src={solana} alt="solana" />
+          <p>21.25</p>
+        </div>
+      </div>
       <div className="grid">
         {Array(10)
           .fill("t")
@@ -71,11 +86,34 @@ const Coinflip = () => {
 
 const Root = styled("div")`
   padding-bottom: 100px;
-  & > h4 {
-    margin: 0;
-    color: #8f8faa;
-    font-weight: 500;
-    font-size: 12px;
+  @media screen and (max-width: 1550px) {
+    padding: 0 50px;
+  }
+  & > .title {
+    display: flex;
+    justify-content: space-between;
+    & > .total {
+      display: flex;
+      align-items: center;
+      & > p {
+        margin: 0;
+        margin-left: 8px;
+        color: #8f8faa;
+        font-weight: 500;
+        font-size: 12px;
+      }
+    }
+    & > h4 {
+      margin: 0;
+      color: #8f8faa;
+      font-weight: 500;
+      font-size: 12px;
+      & > span {
+        margin-left: 5px;
+        color: #ffc700;
+        font-weight: 700;
+      }
+    }
   }
   & > h3 {
     font-family: "Inter";
@@ -95,7 +133,17 @@ const Root = styled("div")`
   & > .input-container {
     margin-bottom: 60px;
     & > .actions {
-      display: none;
+      display: flex;
+      gap: 5px;
+      margin-top: 8px;
+      & > div {
+        background: #0d0d19;
+        color: #414163;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+      }
     }
     & > .input-wrapper {
       display: flex;

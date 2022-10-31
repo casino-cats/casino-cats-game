@@ -1,60 +1,16 @@
-import { useState } from "react";
-
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+
 import styled from "@emotion/styled";
 
 import { MdClose } from "react-icons/md";
-import { useWallet } from "@solana/wallet-adapter-react";
-import toast from "react-hot-toast";
-import useClient from "../../hooks/useClient";
-
-import { auth, depositTransaction, getNonce } from "../../utils/lib/mutations";
-import { Buffer } from "buffer";
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-const Deposit = ({ open, onClose }: Props) => {
-  const [value, setValue] = useState<any>();
-  const client = useClient();
-  const { publicKey, signMessage } = useWallet();
-
-  const depositUsdc = async () => {
-    const signature = await client?.depositUsdc(value);
-
-    if (signature) {
-      const result = await depositTransaction({
-        coinType: 2,
-        amount: 1,
-        signature: signature,
-      });
-      console.log(result);
-
-      if (result.status === "success") {
-        toast.success("Successfully deposited!");
-      }
-      if (result.status === "error") {
-        toast.error(result.message[0]);
-      }
-    }
-  };
-
-  const depositSol = async () => {
-    console.log(value);
-    const signature = await client?.depositSol(value);
-    if (signature) {
-      const result = await depositTransaction({
-        coinType: 1,
-        amount: 1,
-        signature: signature,
-      });
-      console.log(result);
-    }
-  };
-
+const Wallet = ({ open, onClose }: Props) => {
   return (
     <Transition appear show={open} as={Fragment}>
       <Dialog as={Root} onClose={onClose}>
@@ -83,19 +39,17 @@ const Deposit = ({ open, onClose }: Props) => {
             >
               <Dialog.Panel className="modal-panel">
                 <MdClose onClick={onClose} className="close" />
-                <Dialog.Title as="h3">Deposit USDC</Dialog.Title>
+                <Dialog.Title as="h3">Wallet</Dialog.Title>
                 <div className="input">
-                  <input
-                    type="text"
-                    placeholder="0.00"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                  ></input>
+                  <input type="text" placeholder="0.00"></input>
                 </div>
 
-                <button type="button" onClick={depositUsdc}>
-                  Deposit now
-                </button>
+                <div className="actions">
+                  <button className="cancel" type="button">
+                    Withdraw
+                  </button>
+                  <button type="button">Deposit</button>
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -175,18 +129,26 @@ const Root = styled("div")`
             }
           }
         }
-        & > button {
-          width: 100%;
-          border: none;
-          padding: 8px 0;
-          background: #ffc700;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 700;
+        & > .actions {
+          display: flex;
+          gap: 10px;
+          & > button {
+            width: 100%;
+            border: none;
+            padding: 12px 0;
+            background: #ffc700;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            &.cancel {
+              background: transparent;
+              color: #414163;
+            }
+          }
         }
       }
     }
   }
 `;
 
-export default Deposit;
+export default Wallet;

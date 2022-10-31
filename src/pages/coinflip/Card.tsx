@@ -61,6 +61,10 @@ const Card = () => {
           </div>
         </div>
       </div>
+      <div className="provably">
+        <p className="info">Round 1232, Hash: 82d5a36892...33e2235954</p>
+        <p className="copy">Copy</p>
+      </div>
     </Root>
   );
 };
@@ -74,6 +78,29 @@ const Root = styled("div")`
   background: #0d0d19;
   border-radius: 10px;
   overflow: hidden;
+  & > .provably {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    background: #111121;
+    & > p {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 10px;
+      line-height: 120%;
+      color: #8f8faa;
+      margin-top: 0;
+      opacity: 0.5;
+      &.copy {
+        transition: 333ms ease;
+        cursor: pointer;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
   & > .preview-flip {
     display: flex;
     height: calc(100% - 70px);
