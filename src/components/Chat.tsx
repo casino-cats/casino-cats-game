@@ -11,6 +11,7 @@ import { useStoreActions, useStoreState } from "../store/hooks";
 import toast from "react-hot-toast";
 
 const Chat = () => {
+  const [sending, setSending] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [input, setInput] = useState<string>("");
   const messagesRef = useRef<null | HTMLDivElement>(null);
@@ -31,7 +32,17 @@ const Chat = () => {
   };
 
   const handleSubmit = async () => {
+    setSending(true);
     const sendMessage = await chatSendMessage({ message: input });
+    if (sendMessage.status === "success") {
+      const getHistory = await chatHistory();
+      if (getHistory.status === "success") {
+        setMessages(getHistory.data.chatHistoryList);
+        setSending(false);
+        setInput("");
+        scrollToBottom();
+      }
+    }
     if (sendMessage.status === "error") {
       toast.error(sendMessage.message[0]);
     }
@@ -78,13 +89,11 @@ const Chat = () => {
           {messages.map((data: any, i: number) => (
             <div className="chat-message">
               <div className="message--user">
-                <Avatar sx={{ width: 22, height: 22 }} />
-                <p className="level">17</p>
-                <p className="username">Shimsho</p>
+                <Avatar src={data.userAvatar} sx={{ width: 22, height: 22 }} />
+                <p className="level">{data.userLevel}</p>
+                <p className="username">{data.userName}</p>
               </div>
-              <div className="message--content">
-                I stand on my money suddenly im still 54
-              </div>
+              <div className="message--content">{data.message}</div>
             </div>
           ))}
 
@@ -103,6 +112,19 @@ const Chat = () => {
             }
           }}
         />
+        {sending && (
+          <CircularProgress
+            size={25}
+            sx={{
+              color: "#ffc700",
+              position: "absolute",
+              right: 10,
+              top: 0,
+              bottom: 0,
+              margin: "auto",
+            }}
+          />
+        )}
       </div>
     </Root>
   );
@@ -147,6 +169,11 @@ const Root = styled("div")`
             border-radius: 100%;
             color: #0d0d19;
           }
+          & > .username {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
         & > .message--content {
           color: #8f8faa;
@@ -157,17 +184,20 @@ const Root = styled("div")`
           margin-left: 25px;
           font-smooth: antialiased;
           line-height: 20px;
+          word-break: break-word;
         }
       }
     }
   }
   & > .input {
     margin-top: auto;
+    position: relative;
     & > .MuiTextField-root {
       width: 100%;
       & input {
         padding: 12px 14px;
         color: white;
+        position: relative;
         &::placeholder {
           color: #353556;
         }

@@ -13,6 +13,12 @@ import crash from "../assets/crash.svg";
 import solana from "../assets/solana.svg";
 import wallet from "../assets/wallet.svg";
 
+import btc from "../assets/bitcoin-btc-logo.svg";
+import eth from "../assets/ethereum-eth-logo.svg";
+import sol from "../assets/solana-sol-logo.svg";
+import usdc from "../assets/usd-coin-usdc-logo.svg";
+import usdcGrey from "../assets/usd-coin-usdc-logo-grey.svg";
+
 import Button from "./Button";
 import Connect from "./Connect";
 import { NavLink as Link } from "react-router-dom";
@@ -55,15 +61,20 @@ const Header = ({ setDeposit, setWallet }: Props) => {
             placement="bottom-start"
             button={
               <div style={{ paddingTop: 5 }}>
-                <img src={solana} alt="solana" />
+                {coin === 0 && <img src={solana} alt="solana" width="20" />}
+                {coin === 1 && <img src={usdcGrey} alt="solana" width="20" />}
               </div>
             }
           >
             <Coins>
-              <div onClick={() => setCoin(0)}>SOL</div>
-              <div onClick={() => setCoin(1)}>USDC</div>
-              <div onClick={() => setCoin(2)}>ETH</div>
-              <div onClick={() => setCoin(3)}>BTC</div>
+              <div onClick={() => setCoin(0)}>
+                <img src={sol} alt="sol" width="20" />
+                SOL
+              </div>
+              <div onClick={() => setCoin(1)}>
+                <img src={usdc} alt="sol" width="20" />
+                USDC
+              </div>
             </Coins>
           </Popup>
           <p>{user.cccBalance?.toFixed(2) ?? "0.00"}</p>
@@ -84,6 +95,7 @@ const Header = ({ setDeposit, setWallet }: Props) => {
                   sx={{
                     border: "2px solid #111121",
                     boxShadow: "0 0 0 2px #AA8F8F",
+                    marginLeft: `8px`,
                   }}
                 />
                 <p className="level">{user.level}</p>
@@ -108,13 +120,19 @@ const Coins = styled("div")`
   background: transparent;
   border-radius: 8px;
   & > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background: rgb(22 22 40);
     border-radius: 4px;
     color: white;
     text-align: center;
-    padding: 10px 0;
+    padding: 10px 15px;
     font-size: 14px;
     font-weight: 700;
+    &:hover {
+      background: rgb(24 24 42);
+    }
   }
 `;
 

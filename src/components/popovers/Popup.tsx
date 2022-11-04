@@ -76,6 +76,7 @@ const Root = styled("div")`
     outline: none;
     cursor: pointer;
     position: relative;
+    padding: 0;
     & > .level {
       position: absolute;
       bottom: -2px;

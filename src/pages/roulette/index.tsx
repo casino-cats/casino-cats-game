@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "@emotion/styled";
 
 import Avatar from "@mui/material/Avatar";
@@ -15,6 +16,12 @@ const socket = io("https://cats-dev-api.up.railway.app/roulette");
 const Roulette = () => {
   const coins = [silverCoin, goldCoin];
   const PREVIOUS_ROLLS_LENGTH = 10;
+
+  useEffect(() => {
+    socket.on("messageToClient", (message) => {
+      console.log(message);
+    });
+  }, []);
 
   return (
     <Root>

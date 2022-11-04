@@ -10,12 +10,14 @@ import toast from "react-hot-toast";
 import useClient from "../../hooks/useClient";
 
 import { auth, depositTransaction, getNonce } from "../../utils/lib/mutations";
-import { Buffer } from "buffer";
+import * as buffer from "buffer";
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
+
+window.Buffer = buffer.Buffer;
 
 const Deposit = ({ open, onClose }: Props) => {
   const [value, setValue] = useState<any>();
@@ -28,7 +30,7 @@ const Deposit = ({ open, onClose }: Props) => {
     if (signature) {
       const result = await depositTransaction({
         coinType: 2,
-        amount: 1,
+        amount: value,
         signature: signature,
       });
       console.log(result);
@@ -48,10 +50,17 @@ const Deposit = ({ open, onClose }: Props) => {
     if (signature) {
       const result = await depositTransaction({
         coinType: 1,
-        amount: 1,
+        amount: value,
         signature: signature,
       });
       console.log(result);
+
+      if (result.status === "success") {
+        toast.success("Successfully deposited!");
+      }
+      if (result.status === "error") {
+        toast.error(result.message[0]);
+      }
     }
   };
 
@@ -93,7 +102,7 @@ const Deposit = ({ open, onClose }: Props) => {
                   ></input>
                 </div>
 
-                <button type="button" onClick={depositUsdc}>
+                <button type="button" onClick={depositSol}>
                   Deposit now
                 </button>
               </Dialog.Panel>

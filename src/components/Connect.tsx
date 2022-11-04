@@ -8,7 +8,9 @@ import toast from "react-hot-toast";
 import { LOCAL_STORAGE_KEY } from "../utils/helper";
 import { auth, getMe, getNonce } from "../utils/lib/mutations";
 import { useStoreActions, useStoreState } from "../store/hooks";
-import { Buffer } from "buffer";
+import * as buffer from "buffer";
+
+window.Buffer = buffer.Buffer;
 
 const Connect = () => {
   const { user, isAuthenticated } = useStoreState((store) => store.userModel);
@@ -62,6 +64,23 @@ const Connect = () => {
       }
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      const authResult = await getMe();
+      console.log(authResult);
+      setUser({
+        userName: authResult.data.user.username,
+        role: authResult.data.user.role,
+        avatar: authResult.data.user.avatar,
+        cccBalance: authResult.data.user.cccBalance,
+        email: authResult.data.user.email,
+        level: authResult.data.user.level,
+        walletAddress: authResult.data.user.walletAddress,
+        isPrivate: authResult.data.user.isPrivate,
+      });
+    })();
+  }, []);
 
   return (
     <>
